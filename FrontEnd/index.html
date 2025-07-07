@@ -7,14 +7,37 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400..800&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
     <meta name="description" content="" />
     <link rel="stylesheet" href="./assets/style.css" />
     <script src="./script.js" defer></script>
   </head>
   <body>
+    <section class="modal hidden">
+      <div class="modal-nav-1">
+        <i class="fa-solid fa-arrow-left fa-xl hidden"></i>
+        <i class="fa-solid fa-xmark fa-xl"></i>
+      </div>
+
+      <div class="modal-content">
+        <p>Photo Gallery</p>
+      </div>
+    </section>
+    <div class="overlay hidden"></div>
+
+    <section class="edit-notice hidden">
+      <i class="fa-solid fa-pen-to-square"></i>
+      <p>Editing Mode</p>
+    </section>
     <header>
       <h1>Sophie Bluel <span>Interior Designer</span></h1>
       <nav>
@@ -51,7 +74,14 @@
         </article>
       </section>
       <section id="portfolio">
-        <h2>My Projects</h2>
+        <div class="project-section-title">
+          <h2>My Projects</h2>
+          <div class="project-section-button hidden">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <button>Editing Mode</button>
+          </div>
+        </div>
+
         <ul class="project-filter"></ul>
         <div class="gallery"></div>
       </section>

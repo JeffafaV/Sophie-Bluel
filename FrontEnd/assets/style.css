@@ -134,6 +134,7 @@ body {
   margin: auto;
   font-family: "Work Sans";
   font-size: 14px;
+  position: relative;
 }
 header {
   display: flex;
@@ -303,7 +304,49 @@ footer nav ul {
   margin: 2em;
 }
 
-/* LOGIN STYLES */
+/****************ADMIN LOGGED IN STYLES****************/
+.edit-notice {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  /* width: 100vw; */
+  margin-top: 0px;
+  gap: 15px;
+  color: white;
+  background-color: black;
+}
+
+.project-section-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+}
+
+#portfolio > .project-section-title > h2 {
+  margin-bottom: 0;
+}
+
+.project-section-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.project-section-button > button {
+  border: none;
+  background-color: white;
+}
+
+.project-section-button > button:hover {
+  cursor: pointer;
+}
+
+/***************LOGIN STYLES***************/
 .login-body {
   display: flex;
   flex-direction: column;
@@ -348,7 +391,234 @@ footer nav ul {
   color: white;
 }
 
+.login-form > button:hover {
+  cursor: pointer;
+}
+
 .login-error {
   color: red;
   visibility: hidden;
+}
+
+/***************MODAL STYLES**************/
+.modal {
+  position: fixed;
+  width: 550px;
+  height: 600px;
+  border: 1px solid black;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  box-sizing: border-box;
+  padding: 35px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+}
+
+.modal-nav-1 {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  height: 6%;
+  align-items: center;
+}
+
+i.fa-arrow-left:hover {
+  cursor: pointer;
+}
+
+i.fa-xmark:hover {
+  cursor: pointer;
+}
+
+.modal-nav-2 {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 6%;
+  align-items: center;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0 35px;
+  align-items: center;
+  height: 94%;
+}
+
+.modal p {
+  align-self: center;
+  font-size: x-large;
+  /* height: 10%; */
+}
+
+.modal-projects {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(5, 75px);
+  row-gap: 20px;
+  justify-content: space-between;
+  height: 80%;
+  overflow: auto;
+}
+
+.modal-image-container {
+  width: 75px;
+  height: 100px;
+  position: relative;
+}
+
+.trash-icon {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25%;
+  height: 20%;
+  top: 4%;
+  right: 4%;
+  color: white;
+  background-color: black;
+  /* change color to white */
+}
+
+.trash-icon:hover {
+  cursor: pointer;
+}
+
+.modal-image {
+  width: 75px;
+  height: 100px;
+}
+
+.modal-bottom-button {
+  width: 175px;
+  height: 30px;
+  border: none;
+  border-radius: 15px;
+  color: white;
+  background-color: #1d6154;
+}
+
+.modal-bottom-button:hover {
+  cursor: pointer;
+}
+
+.modal-button-disabled {
+  width: 175px;
+  height: 30px;
+  border: none;
+  border-radius: 15px;
+  color: white;
+  background-color: #808080;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+  width: 100%;
+  /* might need to change this once I get the file input up */
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-file-container {
+  background-color: #e8f1f6;
+  height: 175px;
+  width: 100%;
+}
+
+.modal-upload-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.modal-upload-container p {
+  font-size: smaller;
+}
+
+.modal-upload-container label {
+  color: #2a6db4;
+  background-color: #b5bfc4;
+  padding: 8px 30px;
+  border-radius: 15px;
+}
+
+.modal-upload-container label:hover {
+  cursor: pointer;
+}
+
+.modal-upload-container label,
+.modal-input-container label,
+.modal-category-container label {
+  font-size: medium;
+}
+
+/* #e8f1f6 */
+.image-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #b5bfc4;
+}
+
+.modal-preview-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.modal-preview-container > .preview-image {
+  height: 100%;
+  width: 150px;
+}
+
+.modal-input-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+}
+
+.modal-input-container > input,
+.modal-input-container > select {
+  width: 100%;
+  height: 35px;
+  border: none;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content button {
+  margin: 0 10px;
+  /* height: 10%; */
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  /* backdrop-filter: blur(3px); */
+  z-index: 1;
+}
+
+.hidden {
+  display: none;
 }
