@@ -1,14 +1,15 @@
 const form = document.querySelector(".login-form");
-console.log(form);
+
+// login form submit event
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  console.log("HELLO");
 
+  // get form data
   const data = new FormData(form);
   const email = data.get("email");
   const password = data.get("password");
-  //   console.log(data);
 
+  // Post request to the API for login
   const response = await fetch("http://localhost:5678/api/users/login", {
     method: "POST",
     headers: {
@@ -17,17 +18,20 @@ form.addEventListener("submit", async (e) => {
     body: JSON.stringify({ email: email, password: password }),
   });
 
-  console.log(response);
-
+  // successful login
   if (response.ok) {
     const result = await response.json();
 
+    // save login token and send user to the main page
     sessionStorage.setItem("token", result.token);
     window.location = "index.html";
     console.log(result);
-  } else {
+  }
+  // unsuccessful login
+  else {
+    // display login error
     const errorLogin = document.querySelector(".login-error");
     errorLogin.style.visibility = "visible";
-    console.log("ERROR ERROR ERORR SELF DESTRUCT INITIATED");
+    console.log("ERROR: Wrong email or password");
   }
 });

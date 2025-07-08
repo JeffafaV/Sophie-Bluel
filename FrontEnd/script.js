@@ -1,8 +1,12 @@
+// gets projects from the API and inserts them to the gallery section
 async function displayWorks() {
   try {
+    // get request to the API for projects
     const worksResponse = await fetch("http://localhost:5678/api/works", {
       method: "GET",
     });
+
+    // unsuccessful in getting projects
     if (!worksResponse.ok) {
       throw new Error(`HTTP error! status: ${worksResponse.status}`);
     }
@@ -10,6 +14,7 @@ async function displayWorks() {
     const works = await worksResponse.json();
     const gallery = document.querySelector("div.gallery");
 
+    // append each project in the gallery section
     works.forEach((work) => {
       let newFigure = document.createElement("figure");
       let newImg = document.createElement("img");
@@ -30,21 +35,27 @@ async function displayWorks() {
   }
 }
 
+// gets categories from the API and insert them to the filter section
 async function displayCategories() {
   try {
+    // get request to the API for categories
     const categoriesResponse = await fetch(
       "http://localhost:5678/api/categories",
       { method: "GET" }
     );
+    // unsuccessful in getting categories
     if (!categoriesResponse.ok) {
       throw new Error(`HTTP error! status: ${categoriesResponse.status}`);
     }
 
     const categories = await categoriesResponse.json();
+    // inserting the All filter to the categories
     const allFilter = { id: 0, name: "All" };
     const filters = [allFilter, ...categories];
 
     const filterListElement = document.querySelector("ul.project-filter");
+
+    // inserting filter buttons to the filter list
     filters.forEach((filter) => {
       let newListItem = document.createElement("li");
       let newButton = document.createElement("button");
@@ -65,26 +76,32 @@ async function displayCategories() {
   }
 }
 
-async function displayFilteredWorks() {
+// initializes and displays filtered list and projects to site
+async function initializeSite() {
+  // display all projects and filter list
   filters = await displayCategories();
   works = await displayWorks();
 
   const filterElements = document.querySelectorAll("ul.project-filter button");
+  // ALL filter active by default
   filterElements[0].classList.add("active-btn");
 
-  // const gallery = document.querySelector("div.gallery");
+  // add click events to each filter button
   filterElements.forEach((filterElement) => {
     filterElement.addEventListener("click", (e) => {
-      // no filter
+      // no/all filter
       if (filterElement.textContent === filters[0].name) {
+        // removes all work
         removeWorks();
 
+        // sets clicked button as the active button
         const activeFilter = document.querySelector(
           "ul.project-filter button.active-btn"
         );
         activeFilter.classList.remove("active-btn");
         filterElements[0].classList.add("active-btn");
 
+        // displays the works by selected filter/category
         displayWorksByCategory(works);
       }
 
@@ -98,6 +115,7 @@ async function displayFilteredWorks() {
         activeFilter.classList.remove("active-btn");
         filterElements[1].classList.add("active-btn");
 
+        // only get works who's category name matches the filter's name
         const filteredWorks = works.filter(
           (work) => work.category.name === filters[1].name
         );
@@ -142,14 +160,17 @@ async function displayFilteredWorks() {
   });
 }
 
+// adds work to website through an API call (feature in the pop-up/modal)
 async function addWork() {
   try {
+    // getting modal form elements
     const fileInput = document.querySelector(".modal-file-container input");
     const titleInput = document.querySelector(".modal-input-container input");
     const categoryInput = document.querySelector(
       ".modal-input-container select"
     );
 
+    // test if each form input is valid
     if (!fileInput.files[0]) {
       return;
     }
@@ -160,16 +181,15 @@ async function addWork() {
       return;
     }
 
+    // get form data
     const form = document.querySelector(".modal-form");
     const formData = new FormData(form);
-    const imageData = formData.get("image");
-    const titleData = formData.get("title");
-    const categoryData = formData.get("category");
 
-    console.log(imageData);
-    console.log(titleData);
-    console.log(categoryData);
+    // const imageData = formData.get("image");
+    // const titleData = formData.get("title");
+    // const categoryData = formData.get("category");
 
+    // Post request to the API to insert a new project (admin must be signed in)
     const response = await fetch("http://localhost:5678/api/works", {
       method: "POST",
       headers: {
@@ -178,15 +198,11 @@ async function addWork() {
       body: formData,
     });
 
+    // successful in adding work
     if (response.ok) {
-      console.log("IT WORKED");
-
+      //removes all work and resets page with the new work added
       removeWorks();
       works = await displayWorks();
-
-      // displayModalGallery(updatedWorks);
-
-      //resetModal();
     } else {
       console.error("Failed to post work:", response.status);
     }
@@ -195,26 +211,32 @@ async function addWork() {
   }
 }
 
+// deletes work from website through an API call (feature in the pop-up/modal)
 async function deleteWork(id, workElement) {
   try {
+    // Delete request to the API to delete a project (admin must be signed in)
     const resultFetch = await fetch(`http://localhost:5678/api/works/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
     });
+
+    // successful in deleting work
     if (resultFetch.ok) {
+      // removes all work and resets page with the selected work deleted
       removeWorks();
       works = await displayWorks();
+      // remove work from the modal
       workElement.remove();
     }
-    console.log("HERRO");
   } catch (error) {
     alert("Delete work error");
     console.log(error);
   }
 }
 
+// removes all the works displayed in the gallery section
 function removeWorks() {
   const gallery = document.querySelector("div.gallery");
 
@@ -223,9 +245,12 @@ function removeWorks() {
   }
 }
 
+// helper function for initializeSite()
+// displays filtered works to the main page
 function displayWorksByCategory(works) {
   const gallery = document.querySelector("div.gallery");
 
+  // creates HTML elements to display each work's image and title in the gallery
   works.forEach((work) => {
     let newFigure = document.createElement("figure");
     let newImg = document.createElement("img");
@@ -241,13 +266,14 @@ function displayWorksByCategory(works) {
   });
 }
 
+// displays all projects in the first slide of the modal/pop-up
 function displayModalGallery(works) {
-  // change to modalProjects
   const modalProjects = document.querySelector(".modal-projects");
   modalProjects.innerHTML = ""; // Clear previous content
 
+  // creates HTML elements to display each work in the modal
+  // also creates a clickable trash icon
   works.forEach((work) => {
-    // image needs to be in div in order to add trash can icon with relative/absolute
     let modalImgContainer = document.createElement("div");
     modalImgContainer.classList.add("modal-image-container");
 
@@ -263,14 +289,15 @@ function displayModalGallery(works) {
     modalImgContainer.appendChild(imgTrashIcon);
     modalProjects.appendChild(modalImgContainer);
 
+    // on click delete the work from the site and modal
     imgTrashIcon.addEventListener("click", async (e) => {
-      console.log("hello");
       e.preventDefault();
       await deleteWork(work.id, modalImgContainer);
     });
   });
 }
 
+// hides and resets the pop-up for the next time it opens
 function resetModal() {
   const modal = document.querySelector("section.modal");
   modal.classList.add("hidden");
@@ -279,6 +306,9 @@ function resetModal() {
 
   const modalNav1 = document.querySelector("div.modal-nav-1");
   const modalNav2 = document.querySelector("div.modal-nav-2");
+
+  // remove and revert everything from the second slide of the modal
+  // if the user exits from the pop-up on the second slide
   if (modalNav2) {
     modalNav2.classList.remove("modal-nav-2");
     modalNav2.classList.add("modal-nav-1");
@@ -294,7 +324,10 @@ function resetModal() {
 
     modalForm.remove();
     modalFormButton.remove();
-  } else if (modalNav1) {
+  }
+  // remove some elements from the first slide of the modal to prevent
+  // duplicates when opening the modal again
+  else if (modalNav1) {
     const modalProjects = document.querySelector("div.modal-projects");
     const addPhotoButton = document.querySelector("button.modal-bottom-button");
 
@@ -303,7 +336,9 @@ function resetModal() {
   }
 }
 
+// sets the second slide of the modal/pop-up
 function setSecondModalSlide() {
+  /* Everything here deletes and changes elements from the first slide */
   const title = document.querySelector(".modal-content > p");
   title.textContent = "Add Photo";
 
@@ -320,7 +355,9 @@ function setSecondModalSlide() {
 
   modalProjects.remove();
   addPhotoButton.remove();
+  /* ***************************************************************** */
 
+  /* Everything here sets up everything necessary for the add work form */
   const modalForm = document.createElement("form");
   modalForm.setAttribute("id", "modalForm");
   modalForm.classList.add("modal-form");
@@ -360,7 +397,6 @@ function setSecondModalSlide() {
   previewContainer.appendChild(previewImage);
   fileContainer.appendChild(previewContainer);
 
-  // link title and input tag with id and for attributes
   const titleContainer = document.createElement("div");
   titleContainer.classList.add("modal-input-container");
   const titleLabel = document.createElement("label");
@@ -406,7 +442,9 @@ function setSecondModalSlide() {
   modalFormButton.classList.add("modal-button-disabled");
   modalFormButton.textContent = "Confirm";
   modalFormButton.disabled = true;
+  /* ****************************************************************** */
 
+  /* Everything here is for form submission and validation */
   function validateForm() {
     const fileValid = fileInput.files[0];
     const titleValid = titleInput.value.trim().length > 0;
@@ -417,9 +455,7 @@ function setSecondModalSlide() {
     if (modalFormButton.disabled === false) {
       modalFormButton.classList.remove("modal-button-disabled");
       modalFormButton.classList.add("modal-bottom-button");
-      console.log("Button enabled");
     } else {
-      console.log("Button disabled");
     }
   }
 
@@ -457,20 +493,23 @@ function setSecondModalSlide() {
   });
 }
 
-// displayWorks();
-displayFilteredWorks();
+initializeSite();
 
+// checks whether the admin is signed in or not
 const token = sessionStorage.getItem("token");
 if (token !== null) {
-  // display edit notification on top
+  // changes login text to logout text
+  const logoutText = document.querySelector("nav li > a");
+  logoutText.textContent = "logout";
+
+  // displays edit notification on top
   const editNotice = document.querySelector("section.edit-notice");
   editNotice.style.display = "flex";
   const projectSecButton = document.querySelector("div.project-section-button");
   projectSecButton.style.display = "flex";
 
-  // display pop-up/modal on edit button click
+  // displays first slide of pop-up/modal on edit button click
   const editButton = document.querySelector(".project-section-button > button");
-
   editButton.addEventListener("click", (e) => {
     const modal = document.querySelector("section.modal");
     modal.classList.remove("hidden");
@@ -491,6 +530,7 @@ if (token !== null) {
 
     displayModalGallery(works);
 
+    // add click event to display the second slide of modal/pop-up
     if (addPhotoButton) {
       addPhotoButton.addEventListener("click", (e) => {
         setSecondModalSlide();
@@ -500,7 +540,6 @@ if (token !== null) {
 
   // hide pop-up/modal on exit button click
   const exitModalButton = document.querySelector("i.fa-xmark");
-
   exitModalButton.addEventListener("click", (e) => {
     resetModal();
   });
@@ -545,6 +584,7 @@ if (token !== null) {
 
     displayModalGallery(works);
 
+    // add click event to display the second slide of modal/pop-up
     if (addPhotoButton) {
       addPhotoButton.addEventListener("click", (e) => {
         setSecondModalSlide();
@@ -554,5 +594,8 @@ if (token !== null) {
 
   console.log("Admin logged in");
 } else {
+  // changes logout text to login text
+  const loginText = document.querySelector("nav li > a");
+  loginText.textContent = "login";
   console.log("Admin not logged in");
 }
